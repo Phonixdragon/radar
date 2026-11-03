@@ -1,0 +1,10 @@
+PARKVISION QUICK START
+
+1. Open Terminal and enter the PARKVISION folder.
+2. Run: ./run.sh
+3. Set an admin password (12+ characters).
+4. Open: http://127.0.0.1:5000
+5. Test booking, check-in, admin demo occupancy, gate simulation and CSV export.
+6. Read README.md for the Arduino, Funnel and Copyparty instructions.
+
+Default launch mode is DEMO; no Arduino is required yet.

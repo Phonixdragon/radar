@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#09111f">
+  <title>PARKVISION | Smart Parking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="topbar">
+    <a class="brand" href="/"><span class="brand-mark">P</span><span><b>PARKVISION</b><small>SMART PARKING SYSTEM</small></span></a>
+    <div class="top-actions"><span class="live-pill"><i></i> LIVE DEMO</span><button id="themeBtn" class="icon-btn" aria-label="Toggle theme">☼</button><button id="adminToggle" class="ghost-btn">Operator login</button></div>
+  </header>
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero-copy"><p class="eyebrow">INTEGRATED PARKING PROTOTYPE / 001</p><h1>Find a space.<br><em>Move smarter.</em></h1><p class="hero-text">Reserve a parking bay, check in with your booking code, and watch the physical model respond to live occupancy sensing.</p><div class="hero-tags"><span>01 / RESERVE</span><span>02 / CHECK IN</span><span>03 / VERIFY</span></div></div>
+      <div class="hero-orbit"><div class="orbit-ring ring-1"></div><div class="orbit-ring ring-2"></div><div class="orbit-ring ring-3"></div><div class="orbit-center"><span>PV</span><small>SMART<br>ACCESS</small></div><div class="orbit-dot"></div><div class="orbit-label label-one">LIVE SENSOR</div><div class="orbit-label label-two">GATE CONTROL</div></div>
+    </section>
+
+    <section class="metrics-grid">
+      <article class="metric glass"><span class="metric-label">PHYSICAL BAY</span><strong id="physicalStatus">—</strong><small id="distanceReadout">Distance: waiting</small></article>
+      <article class="metric glass"><span class="metric-label">MODEL GATE</span><strong id="gateStatus">—</strong><small>Servo barrier state</small></article>
+      <article class="metric glass"><span class="metric-label">CONTROLLER</span><strong id="connectionStatus">—</strong><small id="modeText">—</small></article>
+      <article class="metric glass"><span class="metric-label">TOTAL BAYS</span><strong>03</strong><small>01 physical · 02 virtual</small></article>
+    </section>
+
+    <section class="section-head"><div><p class="eyebrow">PARKING MAP</p><h2>Choose your bay</h2></div><span class="updated" id="lastUpdated">Waiting for live data…</span></section>
+    <section class="slots-grid" id="slotsGrid"></section>
+
+    <section class="work-grid">
+      <article class="panel glass"><div class="panel-head"><div><p class="eyebrow">QUICK RESERVATION</p><h3>Book a parking space</h3></div><span class="step-tag">01</span></div>
+        <form id="bookingForm" class="form-grid"><label>Your name<input id="visitorName" maxlength="40" required placeholder="Enter visitor name"></label><label>Parking bay<select id="slotSelect"><option value="P-01">P-01 · Physical demo bay</option><option value="P-02">P-02 · Virtual demo bay</option><option value="P-03">P-03 · Virtual demo bay</option></select></label><label>Reservation length<select id="duration"><option value="10">10 minutes</option><option value="15" selected>15 minutes</option><option value="20">20 minutes</option><option value="30">30 minutes</option></select></label><button class="primary-btn" type="submit">Reserve space <span>↗</span></button></form>
+        <div id="bookingResult" class="result-box hidden" aria-live="polite"></div>
+      </article>
+      <article class="panel glass"><div class="panel-head"><div><p class="eyebrow">ARRIVAL CHECK-IN</p><h3>Verify reservation</h3></div><span class="step-tag">02</span></div>
+        <form id="checkinForm" class="form-grid"><label>Booking ID<input id="bookingId" required placeholder="PV-XXXXXXXX" autocapitalize="characters"></label><label>6-digit access code<input id="accessCode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required placeholder="••••••"></label><button class="primary-btn" type="submit">Confirm check-in <span>↗</span></button></form><div id="checkinResult" class="result-box hidden" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <section class="panel glass admin-panel hidden" id="adminPanel"><div class="panel-head"><div><p class="eyebrow">RESTRICTED CONTROLS</p><h3>Operator console</h3></div><button id="logoutBtn" class="ghost-btn">Log out</button></div>
+      <div id="adminLoginArea"><form id="adminLoginForm" class="admin-login"><label>Admin password<input id="adminPassword" type="password" autocomplete="current-password" required placeholder="Enter operator password"></label><button class="primary-btn" type="submit">Unlock console</button></form></div>
+      <div id="adminControls" class="hidden"><div class="operator-grid"><div class="operator-card"><b>Physical bay state</b><span id="adminBayState">—</span><div class="button-row"><button id="demoOccupied" class="secondary-btn">Simulate car entered</button><button id="demoClear" class="secondary-btn">Simulate bay clear</button></div></div><div class="operator-card"><b>Barrier controls</b><span id="adminGateState">—</span><div class="button-row"><button id="openGate" class="secondary-btn">Open gate</button><button id="closeGate" class="secondary-btn">Close gate</button></div></div></div>
+        <div class="export-row"><span>Download project records</span><a href="/api/admin/export/bookings">Bookings CSV ↗</a><a href="/api/admin/export/sensors">Sensor CSV ↗</a><a href="/api/admin/export/events">Events CSV ↗</a></div>
+        <div class="admin-tables"><div><h4>Recent reservations</h4><div id="bookingTable" class="table-wrap"></div></div><div><h4>System events</h4><div id="eventTable" class="table-wrap"></div></div></div>
+      </div>
+    </section>
+
+    <section class="info-strip"><div><span class="info-icon">i</span><p><b>Prototype note</b><br>P-01 is the only physical bay connected to the ultrasonic sensor and servo barrier. P-02 and P-03 are software-only demonstration slots.</p></div><span class="info-code">PV / FIELD TEST BUILD</span></section>
+  </main>
+  <footer><span>PARKVISION · SMARTER SPACE MANAGEMENT</span><span>EDUCATIONAL TABLETOP PROTOTYPE · 2026</span></footer>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
