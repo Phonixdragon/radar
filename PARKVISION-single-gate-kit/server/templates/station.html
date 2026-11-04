@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1220"><title>PARKVISION · Entrance station</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#152238;--panel2:#1c2c46;--line:#30435f;--text:#eef5ff;--muted:#a9bad1;--blue:#79b5ff;--green:#55dfac;--amber:#ffc978;--red:#ff8b94}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 16% 0%,#203653,#0b1220 47%);color:var(--text);font:14px/1.5 Inter,system-ui,sans-serif}.wrap{width:min(1150px,calc(100% - 28px));margin:22px auto 50px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.brand{display:flex;gap:11px;align-items:center}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#67b5ff,#596bea);display:grid;place-items:center;font-size:23px}.eyebrow{font-size:10px;letter-spacing:.17em;color:var(--blue);font-weight:800}.brand h1{font-size:22px;margin:0}.topright{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.chip{border:1px solid var(--line);background:#101c2d;border-radius:999px;padding:7px 11px;color:var(--muted);font-size:11px}.btn{border:1px solid var(--line);border-radius:10px;background:#20334f;color:var(--text);padding:10px 13px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}.btn.primary{background:linear-gradient(120deg,#5baaff,#5969ed);border:0}.btn:disabled{opacity:.4;cursor:not-allowed}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-bottom:14px}.panel{background:linear-gradient(155deg,#192b45,#121d30);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 18px 48px #0003}.hero h2{font-size:27px;line-height:1.12;margin:6px 0 8px}.muted{color:var(--muted)}.bigstatus{font-size:14px;color:var(--green);font-weight:800}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}.stat{background:#0d192b;border:1px solid var(--line);border-radius:12px;padding:11px}.stat strong{font-size:23px;display:block}.stat span{color:var(--muted);font-size:10px}.qrpanel{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:300px}.qrpanel img{width:min(235px,75%);aspect-ratio:1;object-fit:contain;background:white;padding:9px;border-radius:15px;margin:10px 0}.qrplaceholder{width:195px;height:195px;border:1px dashed #526987;border-radius:15px;display:grid;place-items:center;color:var(--muted);padding:20px;margin:13px 0}.qrpanel h2{margin:3px 0;font-size:22px}.notice{font-size:12px;padding:10px 12px;border:1px solid var(--line);background:#0d192b;border-radius:11px;color:var(--muted);margin-top:10px}.notice.warn{color:var(--amber)}.notice.good{color:var(--green)}.row{display:flex;gap:8px;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:12px 0 16px}.bay{border:1px solid var(--line);background:#0f1c2e;border-radius:13px;padding:13px}.bay strong{font-size:21px}.bay span{display:block;color:var(--muted);font-size:11px}.bay .status{font-size:10px;font-weight:850;letter-spacing:.06em;color:var(--green)}.bay .status.busy{color:var(--amber)}.sectiontitle{font-size:18px;margin:0 0 4px}.bookings{display:grid;gap:8px;margin-top:12px}.booking{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#0f1c2e;border:1px solid var(--line);border-radius:12px;padding:11px}.booking small{display:block;color:var(--muted);font-size:11px}.danger{background:#48242d;border-color:#713b47}.footer{margin-top:18px;text-align:center;color:#7186a2;font-size:10px}.hidden{display:none}@media(max-width:800px){.hero{grid-template-columns:1fr}.qrpanel{min-height:250px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="top"><div class="brand"><div class="logo">P</div><div><div class="eyebrow">ADMINISTRATOR CONSOLE</div><h1>PARKVISION · Entrance Station</h1></div></div><div class="topright"><span class="chip" id="serialChip">Arduino: checking…</span><button class="btn" id="connectBtn">Connect / retry Arduino</button><form method="post" action="/logout"><button class="btn" type="submit">Log out</button></form></div></header>
+<section class="hero">
+  <div class="panel">
+    <div class="eyebrow">ENTRANCE SENSOR</div><div class="bigstatus" id="presenceText">WAITING FOR VEHICLE</div><h2 id="distance">— cm</h2><p class="muted">The sensor is configured to detect a vehicle at 8 cm or closer. The MacBook displays the entrance QR only after stable detection.</p>
+    <div class="stats"><div class="stat"><strong id="gateState">—</strong><span>GATE STATUS</span></div><div class="stat"><strong id="availableCount">3</strong><span>AVAILABLE BAYS</span></div><div class="stat"><strong id="reservedCount">0</strong><span>RESERVED BAYS</span></div></div>
+    <div class="row" style="margin-top:14px"><button class="btn primary" id="manualOpen" disabled>Test open gate</button><button class="btn" id="manualClose">Request close</button><button class="btn" id="motorTest" disabled>Optional motor test (disabled)</button></div>
+    <div class="notice" id="eventText">Waiting for Arduino telemetry.</div>
+  </div>
+  <div class="panel qrpanel">
+    <div class="eyebrow">CUSTOMER QR DISPLAY</div>
+    <div id="qrWaiting" class="qrplaceholder">Waiting for a vehicle at the entrance sensor</div>
+    <img id="qrImage" class="hidden" src="/station-qr.png" alt="PARKVISION customer entrance QR code">
+    <h2 id="qrTitle">Entrance QR is hidden</h2>
+    <p class="muted" id="qrDescription">When a vehicle stops within the 8 cm detection zone, this screen will show the customer QR.</p>
+    <div class="notice" id="publicUrlText">Public address: not configured</div>
+  </div>
+</section>
+<section class="panel" style="margin-bottom:14px"><div class="eyebrow">PARKING OVERVIEW</div><h2 class="sectiontitle">Three shared bays</h2><p class="muted" style="margin:3px 0">These states come from reservations in the local database, not from individual bay sensors.</p><div class="grid" id="bayGrid"></div></section>
+<section class="panel"><div class="eyebrow">DATABASE</div><h2 class="sectiontitle">Active reservations</h2><p class="muted" style="margin:3px 0">Use “Release bay” only after the space has become available again.</p><div id="bookings" class="bookings"><div class="muted">Loading reservations…</div></div></section>
+<div class="footer">PARKVISION · Local Flask + SQLite · Arduino USB serial · Science-fair prototype only</div>
+</main>
+<script>
+(() => {
+ const $=id=>document.getElementById(id);
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ async function post(url,body={}){const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json().catch(()=>({error:'Unexpected server response'}));if(!r.ok)throw new Error(d.error||d.message||('HTTP '+r.status));return d;}
+ function renderBays(bays){const free=bays.filter(b=>b.status==='available').length;$('availableCount').textContent=free;$('reservedCount').textContent=bays.length-free;$('bayGrid').innerHTML=bays.map(b=>`<div class="bay"><strong>${esc(b.id)}</strong><span>${esc(b.label)}</span><span class="status ${b.status==='available'?'':'busy'}">${b.status==='available'?'AVAILABLE':'RESERVED'}</span></div>`).join('');}
+ async function refresh(){
+  try{
+   const r=await fetch('/api/station/state',{cache:'no-store'});if(r.status===401){location.href='/login';return;}const d=await r.json();const s=d.station;
+   $('serialChip').textContent=s.serial_connected?'Arduino: connected':'Arduino: disconnected';
+   $('serialChip').style.color=s.serial_connected?'#55dfac':'#ffc978';
+   $('presenceText').textContent=s.sensor_present?'VEHICLE DETECTED · QR ACTIVE':'WAITING FOR VEHICLE';
+   $('presenceText').style.color=s.sensor_present?'#55dfac':'#ffc978';
+   $('distance').textContent=s.distance_cm===null?'No echo':Number(s.distance_cm).toFixed(1)+' cm';
+   $('gateState').textContent=s.gate;
+   $('eventText').textContent='Latest Arduino message: '+(s.last_event||'—');
+   $('manualOpen').disabled=!s.sensor_present||!s.serial_connected;
+   $('manualClose').disabled=!s.serial_connected;
+   $('qrImage').classList.toggle('hidden',!s.sensor_present||!d.public_url);
+   $('qrWaiting').classList.toggle('hidden',!!(s.sensor_present&&d.public_url));
+   $('qrTitle').textContent=s.sensor_present?(d.public_url?'Scan to see available bays':'Public URL not configured'):'Entrance QR is hidden';
+   $('qrDescription').textContent=s.sensor_present?'Scan this code on your phone, choose a free bay and submit your reservation.':'The display will reveal the customer QR code when the sensor detects a vehicle.';
+   $('publicUrlText').textContent=d.public_url?'Customer page: '+d.public_url+'/customer':'Set PARKVISION_PUBLIC_URL in server/.env after enabling Funnel.';
+   renderBays(d.bays||[]);
+  }catch(e){$('eventText').textContent='Station refresh error: '+e.message;}
+ }
+ async function refreshBookings(){try{const r=await fetch('/api/station/bookings',{cache:'no-store'});const d=await r.json();const active=(d.bookings||[]).filter(b=>b.status==='reserved');$('bookings').innerHTML=active.length?active.map(b=>`<div class="booking"><div><strong>${esc(b.bay_id)} · ${esc(b.vehicle_number)}</strong><small>${esc(b.display_name)} · Ref ${esc(b.id)} · ${new Date(b.created_at).toLocaleString()}</small></div><button class="btn danger" data-release="${esc(b.bay_id)}">Release bay</button></div>`).join(''):'<div class="muted">No active reservations.</div>';document.querySelectorAll('[data-release]').forEach(btn=>btn.addEventListener('click',async()=>{if(!confirm('Mark '+btn.dataset.release+' as available again?'))return;try{const x=await post('/api/station/release',{bay_id:btn.dataset.release});$('eventText').textContent=x.message;await refresh();await refreshBookings();}catch(e){alert(e.message);}}));}catch(e){$('bookings').textContent='Could not load reservations: '+e.message;}}
+ $('connectBtn').addEventListener('click',async()=>{ $('connectBtn').disabled=true;try{const d=await post('/api/station/connect');$('eventText').textContent=d.message;}catch(e){$('eventText').textContent=e.message;}finally{$('connectBtn').disabled=false;refresh();}});
+ $('manualOpen').addEventListener('click',async()=>{try{const d=await post('/api/station/command',{command:'OPEN'});$('eventText').textContent=d.message;}catch(e){$('eventText').textContent=e.message;}});
+ $('manualClose').addEventListener('click',async()=>{try{const d=await post('/api/station/command',{command:'CLOSE'});$('eventText').textContent=d.message;}catch(e){$('eventText').textContent=e.message;}});
+ refresh();refreshBookings();setInterval(refresh,600);setInterval(refreshBookings,3000);
+})();
+</script></body></html>
