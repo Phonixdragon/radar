@@ -1,0 +1,3 @@
+PARKVISION — Smart Parking Management System
+Contents: Arduino UNO R3 firmware, responsive website, Supabase SQL setup, and build instructions.
+Start in local demo mode; enable Supabase only after configuring the project URL and public key in web/index.html.

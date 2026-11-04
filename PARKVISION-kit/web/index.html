@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>PARKVISION — Smart Parking</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0c1220;--panel:#151f31;--panel2:#1b2940;--line:#2b3b54;--text:#edf3ff;--muted:#a9b8ce;--blue:#6ca8ff;--green:#48d6a1;--amber:#f5c36b;--red:#ff7d85}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#1a2b46 0,#0c1220 43%);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .wrap{width:min(1120px,calc(100% - 28px));margin:26px auto 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,#57a3ff,#5266e8);display:grid;place-items:center;font-size:24px;box-shadow:0 10px 35px #3159b455}.eyebrow{color:var(--blue);font-weight:800;letter-spacing:.16em;font-size:11px}.brand h1{margin:0;font-size:25px;letter-spacing:.02em}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.statuspill{border:1px solid var(--line);background:#111c2d;padding:8px 12px;border-radius:999px;color:var(--muted);font-size:12px;display:flex;align-items:center;gap:8px}.dot{width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block}.dot.good{background:var(--green)}
+    .hero{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:16px}.panel{background:linear-gradient(160deg,#19263a,#121b2b);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 18px 50px #0003}.hero h2{font-size:28px;line-height:1.15;margin:7px 0 10px}.hero p{color:var(--muted);margin:0;max-width:680px}.heroStat{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:18px}.stat{background:#0e1929;border:1px solid var(--line);padding:12px 14px;border-radius:14px;flex:1}.stat strong{font-size:22px;display:block}.stat span{color:var(--muted);font-size:11px}.sensorbox{display:flex;flex-direction:column;justify-content:space-between}.sensorread{font-size:42px;font-weight:800;letter-spacing:-.04em}.sensorread small{font-size:14px;color:var(--muted);font-weight:600}.muted{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.bay{background:linear-gradient(160deg,#1a2940,#141e2f);border:1px solid var(--line);border-radius:18px;padding:16px;min-height:178px;position:relative;overflow:hidden}.bay:after{content:"";position:absolute;width:90px;height:90px;border:1px solid #6ca8ff22;border-radius:50%;right:-35px;bottom:-42px}.baytop{display:flex;justify-content:space-between;align-items:center}.bay h3{margin:0;font-size:16px}.state{font-size:11px;border-radius:999px;padding:4px 8px;background:#173d34;color:var(--green)}.state.busy{background:#42321e;color:var(--amber)}.state.off{background:#28364a;color:#c0cde0}.bay p{color:var(--muted);font-size:12px;margin:10px 0 14px}.bay button{position:relative;z-index:1}.section{margin-top:18px}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:0 0 10px}.sectionhead h2{font-size:18px;margin:0}.sectionhead p{font-size:12px;color:var(--muted);margin:0}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.field{display:flex;flex-direction:column;gap:5px;margin:9px 0}.field label{font-size:12px;color:var(--muted)}input,select{width:100%;background:#0d1726;border:1px solid var(--line);border-radius:11px;color:var(--text);padding:11px 12px;font:inherit;outline:none}input:focus,select:focus{border-color:var(--blue)}button{border:0;border-radius:11px;padding:10px 14px;background:var(--blue);color:#081426;font-weight:800;cursor:pointer;font:inherit;font-weight:750}button.secondary{background:#263750;color:var(--text);border:1px solid #354966}button.good{background:var(--green);color:#07251c}button.warn{background:#f4c36c;color:#392608}button.danger{background:#5b2a37;color:#ffe5e7;border:1px solid #87414f}button:disabled{opacity:.45;cursor:not-allowed}.small{font-size:11px;color:var(--muted)}.notice{border:1px solid #5d4a28;background:#2a241a;color:#ffdda2;padding:10px 12px;border-radius:12px;font-size:12px;margin-top:12px}.info{border:1px solid #294d70;background:#12263b;color:#c8e5ff;padding:10px 12px;border-radius:12px;font-size:12px;margin-top:12px}.list{display:flex;flex-direction:column;gap:8px}.booking{border:1px solid var(--line);border-radius:13px;padding:12px;background:#101a2a;display:flex;justify-content:space-between;gap:12px;align-items:center}.booking strong{display:block}.booking small{color:var(--muted)}.hidden{display:none!important}.tag{font-size:10px;border:1px solid var(--line);padding:3px 7px;border-radius:999px;color:var(--muted)}.log{height:115px;overflow:auto;background:#09111d;border:1px solid var(--line);border-radius:12px;padding:9px;font:11px/1.5 ui-monospace,monospace;color:#b9d6ff;white-space:pre-wrap}.footer{text-align:center;color:#7f91aa;font-size:11px;margin:22px 0}.authbox{display:grid;grid-template-columns:1fr 1fr;gap:12px}.right{text-align:right}.sep{height:1px;background:var(--line);margin:14px 0}
+    .qrmodal{position:fixed;inset:0;background:#050a13dd;display:grid;place-items:center;padding:18px;z-index:50}.qrbox{width:min(420px,100%);background:#152238;border:1px solid var(--line);border-radius:20px;padding:22px;text-align:center;box-shadow:0 24px 80px #0009}.qrbox h3{margin:0 0 8px}.qrframe{display:inline-grid;place-items:center;background:#fff;padding:12px;border-radius:14px;min-width:250px;min-height:250px;margin:12px auto}.qrframe img{max-width:100%;height:auto}.qrurl{word-break:break-all;font-size:11px;color:var(--muted);margin-top:10px}.livehint{font-size:11px;color:var(--muted)}
+    @media(max-width:760px){.hero,.cols{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.hero h2{font-size:24px}.authbox{grid-template-columns:1fr}.sectionhead{align-items:start;flex-direction:column}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">P</div><div><div class="eyebrow">SMART PARKING MANAGEMENT</div><h1>PARKVISION</h1><p>Reserve · Check in · Detect · Open</p></div></div>
+    <div class="statuspill"><span class="dot" id="cloudDot"></span><span id="cloudStatus">Demo mode · this browser only</span></div>
+  </header>
+
+  <section class="hero">
+    <div class="panel">
+      <div class="eyebrow">PARKING CONTROL CENTER</div>
+      <h2>A smarter entrance.<br> A simpler parking experience.</h2>
+      <p>Reserve a bay before arriving. Check in when you reach the entrance. The gate station will only authorise the barrier after check-in and vehicle detection.</p>
+      <div class="heroStat">
+        <div class="stat"><strong id="availableCount">3</strong><span>AVAILABLE BAYS</span></div>
+        <div class="stat"><strong id="reservedCount">0</strong><span>ACTIVE BOOKINGS</span></div>
+        <div class="stat"><strong id="gateState">CLOSED</strong><span>ENTRANCE GATE</span></div>
+      </div>
+    </div>
+    <div class="panel sensorbox">
+      <div><div class="eyebrow">LIVE ENTRANCE SENSOR</div><div class="sensorread"><span id="distance">--</span><small> cm</small></div><div class="muted" id="sensorText">Connect the Arduino station to receive sensor readings.</div></div>
+      <div class="row" style="margin-top:16px"><span class="tag" id="serialState">Arduino disconnected</span><span class="tag" id="gateAuthState">Not authorised</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sectionhead"><div><h2>Live parking availability</h2><p>Shared reservation status refreshes automatically. Only the entrance is physically sensed.</p><div class="livehint" id="availabilityUpdated">Waiting for availability data…</div></div><span class="tag">3-bay demonstration</span></div>
+    <div class="grid" id="bayGrid">
+      <article class="bay"><div class="baytop"><h3>Bay A1</h3><span class="state">AVAILABLE</span></div><p>Live demonstration bay · vehicle access is verified at the entrance.</p><button class="secondary" disabled>Loading…</button></article>
+      <article class="bay"><div class="baytop"><h3>Bay A2</h3><span class="state off">DEMO</span></div><p>Display bay · reservation status only.</p></article>
+      <article class="bay"><div class="baytop"><h3>Bay A3</h3><span class="state off">DEMO</span></div><p>Display bay · reservation status only.</p></article>
+    </div>
+  </section>
+
+  <section class="section cols">
+    <div class="panel">
+      <div class="sectionhead"><div><h2>Make a reservation</h2><p>Cloud mode requires an account. Demo mode saves on this browser only.</p></div></div>
+      <div id="authArea" class="hidden">
+        <div class="authbox">
+          <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com"></div>
+          <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="At least 6 characters"></div>
+        </div>
+        <div class="row"><button id="signInBtn">Sign in</button><button class="secondary" id="signUpBtn">Create account</button><button class="secondary hidden" id="signOutBtn">Sign out</button></div>
+        <p class="small" id="authMessage">Cloud accounts are used for shared reservations.</p>
+        <div class="sep"></div>
+      </div>
+      <div class="field"><label for="visitorName">Name</label><input id="visitorName" maxlength="50" placeholder="Visitor name"></div>
+      <div class="field"><label for="vehicleNumber">Vehicle registration</label><input id="vehicleNumber" maxlength="20" placeholder="Example: KL-XX-AB-1234"></div>
+      <div class="field"><label for="spotSelect">Select a bay</label><select id="spotSelect"><option value="A1">Bay A1 — Live entrance demo</option><option value="A2">Bay A2 — Display/demo</option><option value="A3">Bay A3 — Display/demo</option></select></div>
+      <button class="good" id="reserveBtn" style="width:100%">Reserve parking bay</button>
+      <div class="notice">Demo limitation: only the entrance is sensed by the HC-SR04. Bay A2 and A3 are booking/display bays, not independently sensor-monitored spaces.</div>
+    </div>
+
+    <div class="panel">
+      <div class="sectionhead"><div><h2>My reservations</h2><p>Check in only after your vehicle reaches the entrance.</p></div><span class="tag" id="userTag">Demo visitor</span></div>
+      <div class="list" id="myBookings"><div class="muted small">No reservations yet.</div></div>
+      <div class="info" id="qrMessage">QR check-in: reserve a bay, then generate a one-time QR code. Scan it at the gate station or another phone to check in.</div>
+      <div class="info">Checking in authorises one arrival. It does not directly move the gate; the HC-SR04 must also detect an object in front of it.</div>
+    </div>
+  </section>
+
+  <section class="section panel" id="adminPanel">
+    <div class="sectionhead"><div><h2>Administrator & gate station</h2><p>Connect the Arduino on the MacBook used as the entrance station.</p></div><span class="tag" id="adminRole">Demo admin</span></div>
+    <div class="row">
+      <button id="connectBtn">Connect Arduino (USB)</button>
+      <button class="secondary" id="disconnectBtn" disabled>Disconnect</button>
+      <button class="warn" id="motorBtn" disabled>Optional motor · not connected</button>
+      <button class="secondary" id="refreshBtn">Refresh data</button>
+    </div>
+    <div class="info" id="stationMessage">Keep this page open on the gate-station MacBook. Chrome must have permission to access the Arduino serial port. In cloud mode, sign in as an administrator on this station.</div>
+    <div class="sep"></div>
+    <div class="sectionhead"><div><h2>All reservations</h2><p>Administrator view</p></div><span class="tag" id="bookingCount">0 bookings</span></div>
+    <div class="list" id="adminBookings"><div class="muted small">No bookings to show.</div></div>
+    <div class="sep"></div>
+    <div class="sectionhead"><div><h2>Gate-station event log</h2><p>Latest Arduino messages</p></div><button class="secondary" id="clearLogBtn">Clear log</button></div>
+    <div class="log" id="eventLog">PARKVISION dashboard ready.
+Waiting for Arduino connection…</div>
+    <div class="notice">Demo mode has no real authentication and stores reservations only in this browser. Enable Supabase for shared phone/laptop bookings and protected admin access.</div>
+  </section>
+  <div class="qrmodal hidden" id="qrModal" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+    <div class="qrbox"><div class="row" style="justify-content:space-between"><span class="tag">ONE-TIME CHECK-IN</span><button class="secondary" id="closeQrBtn" type="button">Close</button></div><h3 id="qrTitle">PARKVISION check-in QR</h3><p class="small" id="qrDescription">Scan this code to check in the reservation.</p><div class="qrframe"><div id="qrCode"></div></div><div class="qrurl" id="qrUrl"></div><p class="small">The code expires after 2 hours and can only be used once. Keep it private until you reach the entrance.</p></div>
+  </div>
+  <div class="footer">PARKVISION · Science fair demonstration · Prototype, not a certified real-world vehicle access system</div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // Add your Supabase Project URL and publishable/anon key here to enable cloud mode.
+  // Never put a Supabase service_role/secret key in this public website.
+  const SUPABASE_URL = '';
+  const SUPABASE_ANON_KEY = '';
+  const CLOUD_ENABLED = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase);
+
+  const $ = (id) => document.getElementById(id);
+  const ACTIVE = ['reserved', 'checked_in', 'arrived'];
+  const QR_TTL_MS = 2 * 60 * 60 * 1000;
+  const MOTOR_DRIVER_ENABLED = false; // Keep false for today's build without L298N.
+  const SPOTS = [
+    { id: 'A1', label: 'Bay A1 - Live entrance demo' },
+    { id: 'A2', label: 'Bay A2 - Display/demo bay' },
+    { id: 'A3', label: 'Bay A3 - Display/demo bay' }
+  ];
+  const state = {
+    db: null, user: null, isAdmin: false, demoAdmin: true,
+    bookings: [], spotStatuses: {},
+    port: null, reader: null, writer: null, readTask: null,
+    stationChannel: null, availabilityChannel: null, pollTimer: null, availabilityPollTimer: null,
+    activeBookingId: null, activeBookingDemo: null,
+    lastSerialLine: '', pendingQr: null,
+  };
+
+  if (CLOUD_ENABLED) {
+    state.db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    $('cloudStatus').textContent = 'Cloud mode · Supabase connected';
+    $('cloudDot').classList.add('good');
+    $('authArea').classList.remove('hidden');
+    $('adminRole').textContent = 'Sign in required';
+    $('userTag').textContent = 'Signed out';
+  }
+
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const localBookings = () => {
+    try { return JSON.parse(localStorage.getItem('parkvision.bookings') || '[]'); }
+    catch { return []; }
+  };
+  const saveLocalBookings = (rows) => localStorage.setItem('parkvision.bookings', JSON.stringify(rows));
+  const log = (message) => {
+    const stamp = new Date().toLocaleTimeString();
+    $('eventLog').textContent = `[${stamp}] ${message}\n` + $('eventLog').textContent;
+    $('eventLog').textContent = $('eventLog').textContent.slice(0, 5000);
+  };
+  const statusLabel = (status) => ({reserved:'RESERVED', checked_in:'CHECKED IN', arrived:'ARRIVED', completed:'COMPLETED', cancelled:'CANCELLED'}[status] || String(status || '').toUpperCase());
+  function markAvailabilityUpdated() {
+    const el = $('availabilityUpdated');
+    if (el) el.textContent = state.db ? `Cloud availability · refreshed ${new Date().toLocaleTimeString()}` : `Local demo availability · refreshed ${new Date().toLocaleTimeString()}`;
+  }
+
+  async function refreshData() {
+    if (!state.db) {
+      state.bookings = localBookings();
+      state.spotStatuses = {};
+      state.bookings.filter(b => ACTIVE.includes(b.status)).forEach(b => state.spotStatuses[b.spot_id] = b.status);
+      renderAll();
+      markAvailabilityUpdated();
+      return;
+    }
+    const { data: spots, error: spotErr } = await state.db.from('parking_status').select('spot_id,label,status');
+    if (spotErr) log('Could not load bay statuses: ' + spotErr.message);
+    state.spotStatuses = {};
+    (spots || []).forEach(s => state.spotStatuses[s.spot_id] = s.status);
+    if (state.user) {
+      const { data: mine, error: mineErr } = await state.db.from('parking_bookings').select('*').eq('user_id', state.user.id).order('created_at', {ascending:false});
+      if (mineErr) log('Could not load your bookings: ' + mineErr.message);
+      const { data: all, error: allErr } = state.isAdmin
+        ? await state.db.from('parking_bookings').select('*').order('created_at', {ascending:false}).limit(100)
+        : {data:[], error:null};
+      if (allErr) log('Could not load admin bookings: ' + allErr.message);
+      state.myBookings = mine || [];
+      state.bookings = state.isAdmin ? (all || []) : (mine || []);
+    } else {
+      state.myBookings = [];
+      state.bookings = [];
+    }
+    renderAll();
+    markAvailabilityUpdated();
+  }
+
+  function myRows() {
+    if (state.db) return state.myBookings || [];
+    return localBookings();
+  }
+
+  function renderAll() {
+    const bookings = state.bookings || [];
+    const my = myRows();
+    let activeCount = 0;
+    SPOTS.forEach(s => { if (ACTIVE.includes(state.spotStatuses[s.id])) activeCount++; });
+    $('availableCount').textContent = String(SPOTS.length - activeCount);
+    $('reservedCount').textContent = String(activeCount);
+    $('bookingCount').textContent = `${bookings.length} bookings`;
+    $('userTag').textContent = state.user ? state.user.email : (state.db ? 'Signed out' : 'Demo visitor');
+    $('adminRole').textContent = state.db ? (state.isAdmin ? 'Cloud administrator' : 'User / station locked') : 'Demo admin · local only';
+    $('bayGrid').innerHTML = SPOTS.map(s => {
+      const st = state.spotStatuses[s.id] || 'available';
+      const busy = ACTIVE.includes(st);
+      const label = busy ? statusLabel(st) : (s.id === 'A1' ? 'LIVE BAY · FREE' : 'DEMO BAY · FREE');
+      const klass = busy ? 'state busy' : 'state';
+      return `<article class="bay"><div class="baytop"><h3>${escapeHtml(s.id)}</h3><span class="${klass}">${escapeHtml(label)}</span></div><p>${escapeHtml(s.label)}</p><button class="secondary" data-spot="${s.id}" ${busy ? 'disabled' : ''}>${busy ? 'Unavailable' : 'Select this bay'}</button></article>`;
+    }).join('');
+    document.querySelectorAll('[data-spot]').forEach(btn => btn.addEventListener('click', () => $('spotSelect').value = btn.dataset.spot));
+
+    $('myBookings').innerHTML = my.length ? my.map(b => `
+      <div class="booking"><div><strong>${escapeHtml(b.spot_id)} · ${escapeHtml(b.vehicle_number || '')}</strong><small>${escapeHtml(b.display_name || '')} · ${escapeHtml(statusLabel(b.status))}</small></div>
+      <div class="row">${b.status === 'reserved' ? `<button class="good" data-checkin="${escapeHtml(b.id)}">Check in now</button><button class="secondary" data-qr="${escapeHtml(b.id)}">Show QR</button><button class="secondary" data-cancel="${escapeHtml(b.id)}">Cancel</button>` : `<span class="tag">${escapeHtml(statusLabel(b.status))}</span>`}</div></div>`).join('') : '<div class="muted small">No reservations yet.</div>';
+    document.querySelectorAll('[data-checkin]').forEach(btn => btn.addEventListener('click', () => checkIn(btn.dataset.checkin)));
+    document.querySelectorAll('[data-qr]').forEach(btn => btn.addEventListener('click', () => showQr(btn.dataset.qr)));
+    document.querySelectorAll('[data-cancel]').forEach(btn => btn.addEventListener('click', () => cancelBooking(btn.dataset.cancel)));
+
+    $('adminBookings').innerHTML = state.isAdmin || !state.db ? (bookings.length ? bookings.map(b => `
+      <div class="booking"><div><strong>${escapeHtml(b.spot_id)} · ${escapeHtml(b.vehicle_number || '')}</strong><small>${escapeHtml(b.display_name || '')} · ${escapeHtml(statusLabel(b.status))}</small></div>
+      <div class="row">${['reserved','checked_in','arrived'].includes(b.status) ? `<button class="secondary" data-complete="${escapeHtml(b.id)}">Complete</button><button class="danger" data-admincancel="${escapeHtml(b.id)}">Cancel</button>` : `<span class="tag">${escapeHtml(statusLabel(b.status))}</span>`}</div></div>`).join('') : '<div class="muted small">No bookings to show.</div>') : '<div class="muted small">Sign in with an administrator account to see all bookings.</div>';
+    document.querySelectorAll('[data-complete]').forEach(btn => btn.addEventListener('click', () => adminSetStatus(btn.dataset.complete, 'completed')));
+    document.querySelectorAll('[data-admincancel]').forEach(btn => btn.addEventListener('click', () => adminSetStatus(btn.dataset.admincancel, 'cancelled')));
+    $('motorBtn').disabled = !MOTOR_DRIVER_ENABLED || !state.writer || (state.db && !state.isAdmin);
+    $('connectBtn').disabled = !('serial' in navigator) || (state.db && !state.isAdmin);
+  }
+
+  function randomToken() {
+    const bytes = new Uint8Array(24);
+    if (!window.crypto || !window.crypto.getRandomValues) throw new Error('Secure random token generation is unavailable. Open PARKVISION over HTTPS or localhost.');
+    window.crypto.getRandomValues(bytes);
+    return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function sha256Hex(value) {
+    if (!window.crypto || !window.crypto.subtle) throw new Error('Secure hashing requires HTTPS or localhost.');
+    const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+    return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function saveLocalQrToken(id, token, expiresAt) {
+    const rows = localBookings();
+    const booking = rows.find(b => b.id === id);
+    if (!booking) throw new Error('This demo booking is not stored in this browser.');
+    booking.qr_token = token;
+    booking.qr_expires_at = expiresAt;
+    saveLocalBookings(rows);
+  }
+
+  async function createQrForBooking(id) {
+    if (state.db) {
+      const { data, error } = await state.db.rpc('create_booking_qr', { p_booking_id: id });
+      if (error) throw new Error(error.message);
+      if (!data) throw new Error('Could not create a QR code. Check that this is your own active reservation.');
+      return data;
+    }
+    const rows = localBookings();
+    const booking = rows.find(b => b.id === id && b.status === 'reserved');
+    if (!booking) throw new Error('This reservation is no longer available for QR check-in.');
+    const token = randomToken();
+    const expiresAt = new Date(Date.now() + QR_TTL_MS).toISOString();
+    booking.qr_token = token;
+    booking.qr_expires_at = expiresAt;
+    saveLocalBookings(rows);
+    return token;
+  }
+
+  function qrDeepLink(id, token) {
+    const url = new URL(location.href);
+    url.search = '';
+    url.hash = '';
+    url.searchParams.set('booking', id);
+    url.searchParams.set('token', token);
+    return url.toString();
+  }
+
+  async function showQr(id) {
+    try {
+      const token = await createQrForBooking(id);
+      const url = qrDeepLink(id, token);
+      $('qrCode').innerHTML = '';
+      $('qrUrl').textContent = url;
+      $('qrDescription').textContent = `Reservation ${id} · scan to check in. The code is single-use.`;
+      if (typeof QRCode === 'undefined') throw new Error('QR library did not load. Check the internet connection and reload the page.');
+      new QRCode($('qrCode'), { text: url, width: 230, height: 230, colorDark: '#071426', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+      $('qrModal').classList.remove('hidden');
+    } catch (e) {
+      alert('QR code could not be created: ' + e.message);
+    }
+  }
+
+  async function redeemQr(id, token) {
+    if (!id || !token) return false;
+    if (state.db) {
+      const { data, error } = await state.db.rpc('check_in_with_qr', { p_booking_id: id, p_token: token });
+      if (error) throw new Error(error.message);
+      return data === true;
+    }
+    const rows = localBookings();
+    const booking = rows.find(b => b.id === id && b.status === 'reserved');
+    if (!booking || booking.qr_token !== token || !booking.qr_expires_at || Date.parse(booking.qr_expires_at) <= Date.now()) return false;
+    booking.status = 'checked_in';
+    booking.checked_in_at = new Date().toISOString();
+    booking.qr_token = null;
+    saveLocalBookings(rows);
+    if (state.writer) await authoriseBooking(booking);
+    await refreshData();
+    return true;
+  }
+
+  async function processQrLink() {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('booking');
+    const token = params.get('token');
+    if (!id || !token || state.pendingQr) return;
+    state.pendingQr = id;
+    $('qrMessage').textContent = 'Checking the one-time QR check-in…';
+    try {
+      const ok = await redeemQr(id, token);
+      $('qrMessage').textContent = ok
+        ? 'QR check-in accepted. The entrance gate will open only when the HC-SR04 detects the approaching vehicle.'
+        : 'This QR code is invalid, expired, already used, or the demo booking is not available in this browser. In cloud mode, scan while connected to the internet.';
+      if (ok) log(`QR check-in accepted for booking ${id}.`);
+    } catch (e) {
+      $('qrMessage').textContent = 'QR check-in failed: ' + e.message;
+    }
+    const cleanUrl = new URL(location.href);
+    cleanUrl.searchParams.delete('booking');
+    cleanUrl.searchParams.delete('token');
+    history.replaceState({}, '', cleanUrl.toString());
+    state.pendingQr = null;
+  }
+
+  async function reserve() {
+    const name = $('visitorName').value.trim();
+    const plate = $('vehicleNumber').value.trim().toUpperCase();
+    const spot = $('spotSelect').value;
+    if (!name || !plate) return alert('Enter your name and vehicle registration first.');
+    if (ACTIVE.includes(state.spotStatuses[spot])) return alert('That bay is already reserved. Choose another one.');
+    if (state.db) {
+      if (!state.user) return alert('Sign in or create an account before reserving a bay.');
+      const { data, error } = await state.db.from('parking_bookings')
+        .insert({spot_id:spot,user_id:state.user.id,display_name:name,vehicle_number:plate,status:'reserved'})
+        .select('id').single();
+      if (error) return alert('Reservation failed: ' + error.message);
+      log(`${spot} reserved for ${plate}. A one-time QR code can now be generated from My reservations.`);
+    } else {
+      const rows = localBookings();
+      if (rows.some(b => b.spot_id === spot && ACTIVE.includes(b.status))) return alert('That bay is already reserved.');
+      rows.unshift({id:(window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : ('pv-' + Date.now() + '-' + Math.random().toString(16).slice(2))),spot_id:spot,user_id:'demo',display_name:name,vehicle_number:plate,status:'reserved',created_at:new Date().toISOString()});
+      saveLocalBookings(rows);
+      log(`${spot} reserved for ${plate}. Demo QR can only be redeemed where this browser's local booking is stored.`);
+    }
+    $('visitorName').value = '';
+    $('vehicleNumber').value = '';
+    await refreshData();
+  }
+
+  async function checkIn(id) {
+    try {
+      const token = await createQrForBooking(id);
+      const ok = await redeemQr(id, token);
+      if (!ok) return alert('Check-in was not accepted. The reservation may already be checked in or the code expired.');
+      log('One-time check-in accepted. Gate station will authorise the sensor cycle.');
+      await refreshData();
+    } catch (e) {
+      alert('Check-in failed: ' + e.message);
+    }
+  }
+
+  async function cancelBooking(id) {
+    if (state.db) {
+      const { error } = await state.db.from('parking_bookings').update({status:'cancelled'}).eq('id',id).eq('status','reserved');
+      if (error) return alert('Cancel failed: ' + error.message);
+    } else {
+      const rows = localBookings(); const b = rows.find(x => x.id === id);
+      if (b && b.status === 'reserved') b.status = 'cancelled';
+      saveLocalBookings(rows);
+    }
+    await refreshData();
+  }
+
+  async function adminSetStatus(id, status) {
+    if (state.db) {
+      if (!state.isAdmin) return alert('Administrator access is required.');
+      const { error } = await state.db.from('parking_bookings').update({status}).eq('id',id);
+      if (error) return alert('Update failed: ' + error.message);
+    } else {
+      const rows = localBookings(); const b = rows.find(x => x.id === id);
+      if (b) b.status = status;
+      saveLocalBookings(rows);
+    }
+    await refreshData();
+  }
+
+  async function sendSerial(command) {
+    if (!state.writer) throw new Error('Arduino is not connected.');
+    await state.writer.write(new TextEncoder().encode(command + '\n'));
+    log('-> ' + command);
+  }
+
+  async function authoriseBooking(booking) {
+    if (!state.writer || state.activeBookingId) return;
+    if (state.db && !state.isAdmin) return;
+    state.activeBookingId = booking.id;
+    state.activeBookingDemo = state.db ? null : booking;
+    $('gateAuthState').textContent = 'One vehicle authorised';
+    try { await sendSerial('ARM'); }
+    catch (e) { state.activeBookingId = null; $('gateAuthState').textContent = 'Not authorised'; log('Serial write failed: ' + e.message); }
+  }
+
+  async function pollCheckedIn() {
+    if (!state.db || !state.isAdmin || !state.writer || state.activeBookingId) return;
+    const { data, error } = await state.db.from('parking_bookings').select('*').eq('status','checked_in').order('checked_in_at',{ascending:true}).limit(1);
+    if (error) { log('Gate station poll error: ' + error.message); return; }
+    if (data && data.length) await authoriseBooking(data[0]);
+  }
+
+  async function onArduinoLine(line) {
+    const text = line.trim();
+    if (!text) return;
+    log('<- ' + text);
+    if (text.startsWith('DIST:')) {
+      const raw = text.slice(5);
+      if (raw === 'OUT') {
+        $('distance').textContent = '--';
+        $('sensorText').textContent = 'No echo / outside measured range';
+      } else {
+        $('distance').textContent = Number(raw).toFixed(1);
+        $('sensorText').textContent = Number(raw) <= 35 ? 'Object in entrance detection zone' : 'Entrance path appears clear';
+      }
+    } else if (text === 'GATE:OPEN') {
+      $('gateState').textContent = 'OPEN';
+      log('Gate opened after check-in authorisation and stable detection.');
+      if (state.activeBookingId) {
+        const id = state.activeBookingId;
+        if (state.db) {
+          const { error } = await state.db.from('parking_bookings').update({status:'arrived'}).eq('id',id).eq('status','checked_in');
+          if (error) log('Could not mark arrival: ' + error.message);
+        } else {
+          const rows = localBookings(); const b = rows.find(x => x.id === id);
+          if (b) { b.status = 'arrived'; saveLocalBookings(rows); }
+        }
+        await refreshData();
+      }
+    } else if (text === 'GATE:CLOSED') {
+      $('gateState').textContent = 'CLOSED';
+      state.activeBookingId = null; state.activeBookingDemo = null;
+      $('gateAuthState').textContent = 'Not authorised';
+      await refreshData();
+    } else if (text === 'AUTH:TIMEOUT') {
+      $('gateAuthState').textContent = 'Check-in expired';
+      if (state.activeBookingId && state.db && state.isAdmin) {
+        const id = state.activeBookingId;
+        const { error } = await state.db.from('parking_bookings').update({status:'reserved',checked_in_at:null}).eq('id',id).eq('status','checked_in');
+        if (error) log('Could not reset timed-out check-in: ' + error.message);
+      } else if (state.activeBookingId && !state.db) {
+        const rows=localBookings(); const b=rows.find(x=>x.id===state.activeBookingId); if(b){b.status='reserved';b.checked_in_at=null;saveLocalBookings(rows);}
+      }
+      state.activeBookingId = null; state.activeBookingDemo = null;
+      await refreshData();
+    } else if (text === 'GATE:HELD') {
+      $('gateState').textContent = 'HELD OPEN';
+    }
+  }
+
+  async function readSerialLoop() {
+    const decoder = new TextDecoder();
+    let buffer = '';
+    while (state.reader) {
+      const {value,done} = await state.reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, {stream:true});
+      let cut;
+      while ((cut = buffer.indexOf('\n')) >= 0) {
+        const line = buffer.slice(0,cut).replace(/\r/g,'');
+        buffer = buffer.slice(cut+1);
+        await onArduinoLine(line);
+      }
+    }
+  }
+
+  async function connectArduino() {
+    if (!('serial' in navigator)) return alert('Web Serial is unavailable in this browser. Use desktop Chrome over HTTPS.');
+    if (state.db && !state.isAdmin) return alert('Sign in using the administrator account on the gate-station computer first.');
+    try {
+      state.port = await navigator.serial.requestPort();
+      await state.port.open({baudRate:9600});
+      state.writer = state.port.writable.getWriter();
+      state.reader = state.port.readable.getReader();
+      $('serialState').textContent = 'Arduino connected';
+      $('serialState').style.color = 'var(--green)';
+      $('disconnectBtn').disabled = false;
+      $('connectBtn').disabled = true;
+      $('motorBtn').disabled = !MOTOR_DRIVER_ENABLED;
+      $('stationMessage').textContent = 'Connected. Keep this tab open. Cloud mode checks for checked-in reservations; demo mode authorises from this browser.';
+      log('Arduino serial port connected at 9600 baud.');
+      renderAll();
+      state.readTask = readSerialLoop().catch(e => log('Serial read ended: ' + e.message));
+      await new Promise(resolve => setTimeout(resolve,2200)); // UNO resets when the serial port opens.
+      if (state.db) {
+        state.stationChannel = state.db.channel('parkvision-gate-station')
+          .on('postgres_changes',{event:'UPDATE',schema:'public',table:'parking_bookings'},payload => {
+            const b = payload.new;
+            if (b && b.status === 'checked_in') authoriseBooking(b);
+          }).subscribe();
+        state.pollTimer = setInterval(pollCheckedIn,3000);
+        await pollCheckedIn();
+      } else {
+        const pending = localBookings().find(b => b.status === 'checked_in');
+        if (pending) await authoriseBooking(pending);
+      }
+    } catch (e) {
+      log('Connection failed: ' + e.message);
+      alert('Could not connect to Arduino: ' + e.message);
+      await disconnectArduino();
+    }
+  }
+
+  async function disconnectArduino() {
+    if (state.pollTimer) { clearInterval(state.pollTimer); state.pollTimer = null; }
+    if (state.stationChannel && state.db) { await state.db.removeChannel(state.stationChannel); state.stationChannel = null; }
+    try { if (state.writer) { await state.writer.write(new TextEncoder().encode('DISARM\n')); state.writer.releaseLock(); } } catch {}
+    try { if (state.reader) { await state.reader.cancel(); state.reader.releaseLock(); } } catch {}
+    try { if (state.port) await state.port.close(); } catch {}
+    state.reader = null; state.writer = null; state.port = null;
+    state.activeBookingId = null; state.activeBookingDemo = null;
+    $('serialState').textContent = 'Arduino disconnected';
+    $('gateAuthState').textContent = 'Not authorised';
+    $('disconnectBtn').disabled = true;
+    $('connectBtn').disabled = false;
+    $('motorBtn').disabled = true;
+    renderAll();
+    log('Arduino disconnected.');
+  }
+
+  function startLiveAvailability() {
+    if (!state.db) return;
+    // Realtime updates provide fast refresh when permissions allow; 5-second polling
+    // is the fallback for public/anonymous visitors and missed events.
+    state.availabilityChannel = state.db.channel('parkvision-availability')
+      .on('postgres_changes', {event:'*', schema:'public', table:'parking_bookings'}, () => {
+        refreshData().catch(e => log('Realtime refresh error: ' + e.message));
+      }).subscribe();
+    state.availabilityPollTimer = setInterval(() => refreshData().catch(e => log('Availability refresh error: ' + e.message)), 5000);
+  }
+
+  async function initAuth() {
+    if (!state.db) return;
+    const {data:{session}} = await state.db.auth.getSession();
+    state.user = session ? session.user : null;
+    state.isAdmin = Boolean(state.user && state.user.app_metadata && state.user.app_metadata.role === 'admin');
+    $('signOutBtn').classList.toggle('hidden',!state.user);
+    $('signInBtn').classList.toggle('hidden',Boolean(state.user));
+    $('signUpBtn').classList.toggle('hidden',Boolean(state.user));
+    $('authMessage').textContent = state.user ? (state.isAdmin ? 'Signed in as administrator.' : 'Signed in. You can reserve and check in.') : 'Create an account to reserve a bay from different devices.';
+    state.db.auth.onAuthStateChange((_event,sessionNow) => {
+      state.user = sessionNow ? sessionNow.user : null;
+      state.isAdmin = Boolean(state.user && state.user.app_metadata && state.user.app_metadata.role === 'admin');
+      $('signOutBtn').classList.toggle('hidden',!state.user);
+      $('signInBtn').classList.toggle('hidden',Boolean(state.user));
+      $('signUpBtn').classList.toggle('hidden',Boolean(state.user));
+      $('authMessage').textContent = state.user ? (state.isAdmin ? 'Signed in as administrator.' : 'Signed in. You can reserve and check in.') : 'Create an account to reserve a bay from different devices.';
+      refreshData();
+    });
+    await refreshData();
+  }
+
+  $('reserveBtn').addEventListener('click', reserve);
+  $('connectBtn').addEventListener('click', connectArduino);
+  $('disconnectBtn').addEventListener('click', disconnectArduino);
+  $('refreshBtn').addEventListener('click', refreshData);
+  $('clearLogBtn').addEventListener('click', () => $('eventLog').textContent = 'Log cleared.');
+  $('motorBtn').addEventListener('click', async () => {
+    if (!MOTOR_DRIVER_ENABLED) return alert('The L298N motor is disabled in this build. Keep it disconnected today.');
+    try { await sendSerial('MOTOR_PULSE'); } catch(e) { alert(e.message); }
+  });
+  $('closeQrBtn').addEventListener('click', () => $('qrModal').classList.add('hidden'));
+  $('qrModal').addEventListener('click', (event) => { if (event.target === $('qrModal')) $('qrModal').classList.add('hidden'); });
+
+  if (state.db) {
+    $('signInBtn').addEventListener('click', async () => {
+      const {error} = await state.db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+      $('authMessage').textContent = error ? error.message : 'Signed in.';
+      if (!error) await refreshData();
+    });
+    $('signUpBtn').addEventListener('click', async () => {
+      const {error} = await state.db.auth.signUp({email:$('email').value.trim(),password:$('password').value});
+      $('authMessage').textContent = error ? error.message : 'Account created. Confirm your email if Supabase requests it, then sign in.';
+    });
+    $('signOutBtn').addEventListener('click', async () => { await state.db.auth.signOut(); state.user=null;state.isAdmin=false;await refreshData(); });
+  }
+
+  if ('serial' in navigator) {
+    navigator.serial.addEventListener('disconnect', () => { disconnectArduino(); });
+  }
+  if (state.db) {
+    initAuth().then(processQrLink);
+    startLiveAvailability();
+  } else {
+    refreshData().then(processQrLink);
+  }
+})();
+</script>
+</body>
+</html>
